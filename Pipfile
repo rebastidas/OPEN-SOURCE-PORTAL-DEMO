@@ -6,6 +6,11 @@ name = "pypi"
 [packages]
 django = "*"
 djangorestframework = "*"
+django-environ = "*"
+mysqlclient = "*"
+mysql = "*"
+mysql-connector-python = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
