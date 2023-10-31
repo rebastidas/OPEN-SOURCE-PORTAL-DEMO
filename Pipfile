@@ -8,9 +8,9 @@ django = "*"
 djangorestframework = "*"
 django-environ = "*"
 mysqlclient = "*"
-mysql = "*"
 mysql-connector-python = "*"
 python-dotenv = "*"
+djangorestframework-simplejwt = "==4.7.0"
 
 [dev-packages]
 
