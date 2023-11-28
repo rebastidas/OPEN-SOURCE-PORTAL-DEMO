@@ -11,6 +11,8 @@ mysqlclient = "*"
 mysql-connector-python = "*"
 python-dotenv = "*"
 djangorestframework-simplejwt = "==4.7.0"
+requests = "*"
+chardet = "*"
 
 [dev-packages]
 
