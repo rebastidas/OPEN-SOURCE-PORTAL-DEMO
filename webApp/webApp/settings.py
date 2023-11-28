@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'users',
     'app',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'rest_framework'
 ]
 
@@ -88,7 +90,7 @@ WSGI_APPLICATION = 'webApp.wsgi.application'
 
 DATABASES = {
   'default': {
-    'ENGINE': 'django_psdb_engine',
+    'ENGINE': os.environ.get('DB_ENGINE'),
     'NAME': os.environ.get('DB_NAME'),
     'HOST': os.environ.get('DB_HOST'),
     'PORT': os.environ.get('DB_PORT'),
@@ -98,7 +100,6 @@ DATABASES = {
                 'init_command': 'SET foreign_key_checks = 0;'}
   }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -126,6 +127,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+SIMPLE_JWT = {
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True
+}
+
 
 
 # Internationalization
