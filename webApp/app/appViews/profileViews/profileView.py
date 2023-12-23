@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -10,18 +11,20 @@ from users.serializers.userSerializer import UserSerializer
 
 
 class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
+    def get_user_instance(self, user_id):
+        return get_object_or_404(User, id=user_id)
+    
+    def get_user_profile_instance(self,user_id):
+        user_instance = self.get_user_instance(user_id)
+        return get_object_or_404(UserProfile, user=user_instance)
 
     def get(self,request, *args, **kwargs):
         userId = kwargs.get('id')
-        user = User.objects.get(id=userId)
-        try:
-            userProfile = UserProfile.objects.get(user = user)
-        except UserProfile.DoesNotExist:
-            raise Http404
-
-        serializer = UserProfileSerializer(userProfile)
-        return Response({'id':userId, 'data': serializer},status = status.HTTP_200_OK)
+        user_profile_instance = self.get_user_profile_instance(userId)
+        serializer = UserProfileSerializer(user_profile_instance)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
     
     def post(self, request):
         email = request.user.email
@@ -45,3 +48,16 @@ class ProfileView(APIView):
             return Response({'message': 'Profile saved succesfully'})
 
         return Response({'data': 'data is not valid', 'error': serializer.errors})
+    
+    def put(self, request, *args, **kwargs):
+
+        userId = kwargs.get('id')
+        user_profile_instance = self.get_user_profile_instance(userId)
+        
+        serializer = UserProfileSerializer(user_profile_instance, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
+        
+        return Response({'data': 'Data is not valid', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
