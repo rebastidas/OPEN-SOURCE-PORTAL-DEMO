@@ -1,3 +1,5 @@
+from email.policy import default
+import uuid
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
@@ -9,7 +11,7 @@ class UserManager(BaseUserManager):
        now = timezone.now()
        email = self.normalize_email(email)
        user= self.model(
-           email=email,
+            email=email,
             is_staff=is_staff, 
             is_active=True,
             is_superuser=is_superuser, 
@@ -30,6 +32,7 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = models.BigAutoField(primary_key=True,editable=False)
     email = models.EmailField(max_length=254, unique=True)
     name = models.CharField(max_length=254, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
